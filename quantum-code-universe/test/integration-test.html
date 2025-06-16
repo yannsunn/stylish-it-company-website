@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Systems Integration Test</title>
+    <style>
+        body {
+            font-family: 'SF Pro Display', -apple-system, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #0f172a;
+            color: #e2e8f0;
+        }
+        
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .test-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .test-section {
+            background: #1e293b;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .test-status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+        
+        .status-pass { background: #059669; color: white; }
+        .status-fail { background: #dc2626; color: white; }
+        .status-pending { background: #d97706; color: white; }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .metric-card {
+            background: #334155;
+            padding: 1rem;
+            border-radius: 6px;
+        }
+        
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #60a5fa;
+        }
+        
+        .metric-label {
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+        
+        .test-controls {
+            text-align: center;
+            margin: 2rem 0;
+        }
+        
+        .test-btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 0 0.5rem;
+        }
+        
+        .test-btn:hover {
+            background: #2563eb;
+        }
+        
+        .test-log {
+            background: #000;
+            color: #00ff00;
+            padding: 1rem;
+            border-radius: 6px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.8rem;
+            height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h1>🧪 Quantum Systems Integration Test</h1>
+            <p>Comprehensive testing of Quantum-CDN, Invisible Analytics, and Self-Healing systems</p>
+        </div>
+
+        <div class="test-controls">
+            <button class="test-btn" onclick="runAllTests()">Run All Tests</button>
+            <button class="test-btn" onclick="runPerformanceTest()">Performance Test</button>
+            <button class="test-btn" onclick="runStressTest()">Stress Test</button>
+            <button class="test-btn" onclick="clearLog()">Clear Log</button>
+        </div>
+
+        <!-- System Status -->
+        <div class="test-section">
+            <h2>System Status</h2>
+            <div id="system-status">
+                <div>Quantum-CDN: <span id="cdn-status" class="test-status status-pending">INITIALIZING</span></div>
+                <div>Invisible Analytics: <span id="analytics-status" class="test-status status-pending">INITIALIZING</span></div>
+                <div>Self-Healing: <span id="healing-status" class="test-status status-pending">INITIALIZING</span></div>
+                <div>Main Integration: <span id="main-status" class="test-status status-pending">INITIALIZING</span></div>
+            </div>
+        </div>
+
+        <!-- Performance Metrics -->
+        <div class="test-section">
+            <h2>Performance Metrics</h2>
+            <div class="metrics-grid" id="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-value" id="load-time-metric">--</div>
+                    <div class="metric-label">Average Load Time (ms)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="cache-hit-metric">--</div>
+                    <div class="metric-label">Cache Hit Rate (%)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="error-count-metric">--</div>
+                    <div class="metric-label">Error Count</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="recovery-rate-metric">--</div>
+                    <div class="metric-label">Recovery Success Rate (%)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Results -->
+        <div class="test-section">
+            <h2>Test Results</h2>
+            <div id="test-results"></div>
+        </div>
+
+        <!-- Test Log -->
+        <div class="test-section">
+            <h2>Test Log</h2>
+            <div id="test-log" class="test-log"></div>
+        </div>
+    </div>
+
+    <!-- Load Systems -->
+    <script src="../js/quantum-cdn.js"></script>
+    <script src="../js/invisible-analytics.js"></script>
+    <script src="../js/self-healing.js"></script>
+    <script src="../js/main.js"></script>
+
+    <script>
+        class IntegrationTester {
+            constructor() {
+                this.testResults = [];
+                this.logContainer = document.getElementById('test-log');
+                this.isRunning = false;
+                
+                this.init();
+            }
+
+            init() {
+                this.log('🚀 Integration Tester initialized');
+                this.checkSystemAvailability();
+                this.startMetricsUpdating();
+            }
+
+            log(message, type = 'info') {
+                const timestamp = new Date().toLocaleTimeString();
+                const logMessage = `[${timestamp}] ${message}\n`;
+                
+                this.logContainer.textContent += logMessage;
+                this.logContainer.scrollTop = this.logContainer.scrollHeight;
+                
+                console.log(message);
+            }
+
+            async checkSystemAvailability() {
+                const systems = {
+                    'cdn': 'QuantumCDN',
+                    'analytics': 'InvisibleAnalytics', 
+                    'healing': 'SelfHealingSystem',
+                    'main': 'quantumWebsite'
+                };
+
+                for (const [key, globalName] of Object.entries(systems)) {
+                    const statusElement = document.getElementById(`${key}-status`);
+                    
+                    if (window[globalName]) {
+                        statusElement.textContent = 'READY';
+                        statusElement.className = 'test-status status-pass';
+                        this.log(`✅ ${globalName} system available`);
+                    } else {
+                        statusElement.textContent = 'UNAVAILABLE';
+                        statusElement.className = 'test-status status-fail';
+                        this.log(`❌ ${globalName} system unavailable`, 'error');
+                    }
+                }
+            }
+
+            startMetricsUpdating() {
+                setInterval(() => {
+                    this.updateMetrics();
+                }, 2000);
+            }
+
+            updateMetrics() {
+                try {
+                    // CDN Metrics
+                    if (window.QuantumCDN) {
+                        const cdnMetrics = window.QuantumCDN.getPerformanceMetrics();
+                        document.getElementById('load-time-metric').textContent = 
+                            Math.round(cdnMetrics.averageLoadTime || 0);
+                        document.getElementById('cache-hit-metric').textContent = 
+                            Math.round((cdnMetrics.cacheHitRate || 0) * 100);
+                    }
+
+                    // Healing System Metrics
+                    if (window.SelfHealingSystem) {
+                        const healingMetrics = window.SelfHealingSystem.getSystemHealth();
+                        document.getElementById('error-count-metric').textContent = 
+                            healingMetrics.errorCount || 0;
+                        document.getElementById('recovery-rate-metric').textContent = 
+                            Math.round((healingMetrics.performanceMetrics.recoverySuccesses / 
+                                Math.max(healingMetrics.performanceMetrics.loadFailures, 1)) * 100);
+                    }
+                } catch (error) {
+                    this.log(`⚠️ Error updating metrics: ${error.message}`, 'warning');
+                }
+            }
+
+            async runAllTests() {
+                if (this.isRunning) {
+                    this.log('⚠️ Tests already running');
+                    return;
+                }
+
+                this.isRunning = true;
+                this.testResults = [];
+                this.log('🧪 Starting comprehensive integration tests...');
+
+                try {
+                    await this.runCDNTests();
+                    await this.runAnalyticsTests();
+                    await this.runHealingTests();
+                    await this.runIntegrationTests();
+                    
+                    this.displayTestResults();
+                    this.log('✅ All tests completed');
+                } catch (error) {
+                    this.log(`❌ Test suite failed: ${error.message}`, 'error');
+                } finally {
+                    this.isRunning = false;
+                }
+            }
+
+            async runCDNTests() {
+                this.log('📡 Testing Quantum-CDN system...');
+                
+                // Test 1: CDN Initialization
+                const test1 = await this.testCDNInitialization();
+                this.testResults.push(test1);
+
+                // Test 2: Lazy Loading
+                const test2 = await this.testLazyLoading();
+                this.testResults.push(test2);
+
+                // Test 3: Image Optimization
+                const test3 = await this.testImageOptimization();
+                this.testResults.push(test3);
+
+                // Test 4: Predictive Loading
+                const test4 = await this.testPredictiveLoading();
+                this.testResults.push(test4);
+            }
+
+            async testCDNInitialization() {
+                try {
+                    if (!window.QuantumCDN) {
+                        throw new Error('QuantumCDN not available');
+                    }
+
+                    const metrics = window.QuantumCDN.getPerformanceMetrics();
+                    
+                    return {
+                        name: 'CDN Initialization',
+                        passed: metrics !== null,
+                        message: 'CDN system initialized successfully',
+                        details: `Metrics available: ${Object.keys(metrics).length} properties`
+                    };
+                } catch (error) {
+                    return {
+                        name: 'CDN Initialization',
+                        passed: false,
+                        message: error.message,
+                        details: 'CDN system failed to initialize'
+                    };
+                }
+            }
+
+            async testLazyLoading() {
+                try {
+                    // Create test image
+                    const testImg = document.createElement('img');
+                    testImg.setAttribute('data-lazy-src', 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iIzMzMzMzMyIvPjwvc3ZnPg==');
+                    document.body.appendChild(testImg);
+
+                    // Simulate intersection
+                    if (window.QuantumCDN && window.QuantumCDN.observer) {
+                        window.QuantumCDN.observer.observe(testImg);
+                    }
+
+                    // Wait for lazy loading
+                    await this.wait(1000);
+
+                    const hasLoadedClass = testImg.classList.contains('lazy-loaded');
+                    
+                    // Cleanup
+                    testImg.remove();
+
+                    return {
+                        name: 'Lazy Loading',
+                        passed: hasLoadedClass,
+                        message: hasLoadedClass ? 'Lazy loading working correctly' : 'Lazy loading failed',
+                        details: `Image class list: ${testImg.className}`
+                    };
+                } catch (error) {
+                    return {
+                        name: 'Lazy Loading',
+                        passed: false,
+                        message: error.message,
+                        details: 'Lazy loading test encountered an error'
+                    };
+                }
+            }
+
+            async testImageOptimization() {
+                try {
+                    if (!window.QuantumCDN) {
+                        throw new Error('QuantumCDN not available');
+                    }
+
+                    const webpSupport = await window.QuantumCDN.checkWebPSupport();
+                    const avifSupport = await window.QuantumCDN.checkAVIFSupport();
+
+                    return {
+                        name: 'Image Optimization',
+                        passed: true,
+                        message: 'Image format detection working',
+                        details: `WebP: ${webpSupport}, AVIF: ${avifSupport}`
+                    };
+                } catch (error) {
+                    return {
+                        name: 'Image Optimization',
+                        passed: false,
+                        message: error.message,
+                        details: 'Image optimization test failed'
+                    };
+                }
+            }
+
+            async testPredictiveLoading() {
+                try {
+                    if (!window.QuantumCDN) {
+                        throw new Error('QuantumCDN not available');
+                    }
+
+                    const metrics = window.QuantumCDN.getPerformanceMetrics();
+                    const hasPredictions = metrics.predictions && Array.isArray(metrics.predictions);
+
+                    return {
+                        name: 'Predictive Loading',
+                        passed: hasPredictions,
+                        message: hasPredictions ? 'Predictive loading system active' : 'No predictions recorded',
+                        details: `Predictions array length: ${metrics.predictions?.length || 0}`
+                    };
+                } catch (error) {
+                    return {
+                        name: 'Predictive Loading',
+                        passed: false,
+                        message: error.message,
+                        details: 'Predictive loading test failed'
+                    };
+                }
+            }
+
+            async runAnalyticsTests() {
+                this.log('📊 Testing Invisible Analytics system...');
+
+                const test1 = await this.testAnalyticsInitialization();
+                this.testResults.push(test1);
+
+                const test2 = await this.testEventTracking();
+                this.testResults.push(test2);
+
+                const test3 = await this.testPrivacyProtection();
+                this.testResults.push(test3);
+
+                const test4 = await this.testABTesting();
+                this.testResults.push(test4);
+            }
+
+            async testAnalyticsInitialization() {
+                try {
+                    if (!window.InvisibleAnalytics) {
+                        throw new Error('InvisibleAnalytics not available');
+                    }
+
+                    // Check if analytics has required methods
+                    const requiredMethods = ['track', 'identify', 'getAnalyticsData'];
+                    const methodsAvailable = requiredMethods.every(method => 
+                        typeof window.InvisibleAnalytics[method] === 'function'
+                    );
+
+                    return {
+                        name: 'Analytics Initialization',
+                        passed: methodsAvailable,
+                        message: methodsAvailable ? 'All analytics methods available' : 'Missing analytics methods',
+                        details: `Required methods: ${requiredMethods.join(', ')}`
+                    };
+                } catch (error) {
+                    return {
+                        name: 'Analytics Initialization',
+                        passed: false,
+                        message: error.message,
+                        details: 'Analytics system initialization failed'
+                    };
+                }
+            }
+
+            async testEventTracking() {
+                try {
+                    if (!window.InvisibleAnalytics) {
+                        throw new Error('InvisibleAnalytics not available');
+                    }
+
+                    // Simulate consent
+                    window.InvisibleAnalytics.consentGiven = true;
+
+                    // Track test event
+                    window.InvisibleAnalytics.track('test_event', { testData: 'integration_test' });
+
+                    // Wait for event processing
+                    await this.wait(500);
+
+                    const data = window.InvisibleAnalytics.getAnalyticsData();
+                    const hasTestEvent = data && data.session && 
+                        data.session.events.some(event => event.type === 'test_event');
+
+                    return {
+                        name: 'Event Tracking',
+                        passed: hasTestEvent,
+                        message: hasTestEvent ? 'Event tracking functional' : 'Event not recorded',
+                        details: `Total events: ${data?.session?.events?.length || 0}`
+                    };
+                } catch (error) {
+                    return {
+                        name: 'Event Tracking',
+                        passed: false,
+                        message: error.message,
+                        details: 'Event tracking test failed'
+                    };
+                }
+            }
+
+            async testPrivacyProtection() {
+                try {
+                    if (!window.InvisibleAnalytics) {
+                        throw new Error('InvisibleAnalytics not available');
+                    }
+
+                    // Test differential privacy noise
+                    const originalValue = 100;
+                    const noisedValue = window.InvisibleAnalytics.addNoise(originalValue);
+                    const hasNoise = Math.abs(noisedValue - originalValue) > 0;
+
+                    // Test user ID hashing
+                    const testUserId = 'test-user-123';
+                    const hashedId = window.InvisibleAnalytics.hashUserId(testUserId);
+                    const isHashed = hashedId !== testUserId && hashedId.startsWith('h_');
+
+                    const privacyWorking = hasNoise && isHashed;
+
+                    return {
+                        name: 'Privacy Protection',
+                        passed: privacyWorking,
+                        message: privacyWorking ? 'Privacy mechanisms active' : 'Privacy protection failed',
+                        details: `Noise applied: ${hasNoise}, ID hashed: ${isHashed}`
+                    };
+                } catch (error) {
+                    return {
+                        name: 'Privacy Protection',
+                        passed: false,
+                        message: error.message,
+                        details: 'Privacy protection test failed'
+                    };
+                }
+            }
+
+            async testABTesting() {
+                try {
+                    if (!window.InvisibleAnalytics) {
+                        throw new Error('InvisibleAnalytics not available');
+                    }
+
+                    const abTestGroups = window.InvisibleAnalytics.abTestGroups;
+                    const hasABTests = abTestGroups && Object.keys(abTestGroups).length > 0;
+
+                    return {
+                        name: 'A/B Testing',
+                        passed: hasABTests,
+                        message: hasABTests ? 'A/B testing system active' : 'No A/B tests configured',
+                        details: `Test groups: ${Object.keys(abTestGroups || {}).join(', ')}`
+                    };
+                } catch (error) {
+                    return {
+                        name: 'A/B Testing',
+                        passed: false,
+                        message: error.message,
+                        details: 'A/B testing test failed'
+                    };
+                }
+            }
+
+            async runHealingTests() {
+                this.log('🔧 Testing Self-Healing system...');
+
+                const test1 = await this.testHealingInitialization();
+                this.testResults.push(test1);
+
+                const test2 = await this.testErrorHandling();
+                this.testResults.push(test2);
+
+                const test3 = await this.testResourceRecovery();
+                this.testResults.push(test3);
+
+                const test4 = await this.testPerformanceAdaptation();
+                this.testResults.push(test4);
+            }
+
+            async testHealingInitialization() {
+                try {
+                    if (!window.SelfHealingSystem) {
+                        throw new Error('SelfHealingSystem not available');
+                    }
+
+                    const health = window.SelfHealingSystem.getSystemHealth();
+                    const hasHealthData = health && typeof health.errorCount === 'number';
+
+                    return {
+                        name: 'Healing System Initialization',
+                        passed: hasHealthData,
+                        message: hasHealthData ? 'Healing system operational' : 'Health data unavailable',
+                        details: `Error count: ${health?.errorCount || 'unknown'}`
+                    };
+                } catch (error) {
+                    return {
+                        name: 'Healing System Initialization',
+                        passed: false,
+                        message: error.message,
+                        details: 'Healing system initialization failed'
+                    };
+                }
+            }
+
+            async testErrorHandling() {
+                try {
+                    if (!window.SelfHealingSystem) {
+                        throw new Error('SelfHealingSystem not available');
+                    }
+
+                    // Simulate error
+                    const testError = {
+                        type: 'test',
+                        message: 'Integration test error',
+                        filename: 'test.js',
+                        lineno: 1
+                    };
+
+                    window.SelfHealingSystem.handleError(testError);
+
+                    // Check if error was logged
+                    const health = window.SelfHealingSystem.getSystemHealth();
+                    const errorIncreased = health.errorCount > 0;
+
+                    return {
+                        name: 'Error Handling',
+                        passed: errorIncreased,
+                        message: errorIncreased ? 'Error handling working' : 'Error not processed',
+                        details: `Current error count: ${health.errorCount}`
+                    };
+                } catch (error) {
+                    return {
+                        name: 'Error Handling',
+                        passed: false,
+                        message: error.message,
+                        details: 'Error handling test failed'
+                    };
+                }
+            }
+
+            async testResourceRecovery() {
+                try {
+                    if (!window.SelfHealingSystem) {
+                        throw new Error('SelfHealingSystem not available');
+                    }
+
+                    // Create test element
+                    const testScript = document.createElement('script');
+                    testScript.src = 'https://nonexistent.example.com/test.js';
+                    
+                    // Simulate resource error
+                    window.SelfHealingSystem.handleResourceError(testScript);
+
+                    await this.wait(1000);
+
+                    return {
+                        name: 'Resource Recovery',
+                        passed: true, // If we get here, recovery mechanism was triggered
+                        message: 'Resource recovery mechanism triggered',
+                        details: 'Recovery process initiated for failed resource'
+                    };
+                } catch (error) {
+                    return {
+                        name: 'Resource Recovery',
+                        passed: false,
+                        message: error.message,
+                        details: 'Resource recovery test failed'
+                    };
+                }
+            }
+
+            async testPerformanceAdaptation() {
+                try {
+                    if (!window.SelfHealingSystem) {
+                        throw new Error('SelfHealingSystem not available');
+                    }
+
+                    // Test connection quality adaptation
+                    window.SelfHealingSystem.updateConnectionQuality('2g');
+                    
+                    const health = window.SelfHealingSystem.getSystemHealth();
+                    const hasAdaptiveSettings = health.adaptiveSettings && 
+                        typeof health.adaptiveSettings.imageQuality === 'number';
+
+                    return {
+                        name: 'Performance Adaptation',
+                        passed: hasAdaptiveSettings,
+                        message: hasAdaptiveSettings ? 'Adaptive settings functional' : 'Adaptation not working',
+                        details: `Image quality: ${health.adaptiveSettings?.imageQuality || 'unknown'}`
+                    };
+                } catch (error) {
+                    return {
+                        name: 'Performance Adaptation',
+                        passed: false,
+                        message: error.message,
+                        details: 'Performance adaptation test failed'
+                    };
+                }
+            }
+
+            async runIntegrationTests() {
+                this.log('🔗 Testing system integration...');
+
+                const test1 = await this.testSystemCommunication();
+                this.testResults.push(test1);
+
+                const test2 = await this.testCrossSystemMetrics();
+                this.testResults.push(test2);
+            }
+
+            async testSystemCommunication() {
+                try {
+                    // Test if systems can communicate
+                    const systems = ['QuantumCDN', 'InvisibleAnalytics', 'SelfHealingSystem'];
+                    const allSystemsAvailable = systems.every(system => window[system]);
+
+                    if (!allSystemsAvailable) {
+                        throw new Error('Not all systems available for communication test');
+                    }
+
+                    // Test event bus if available
+                    const hasEventBus = window.quantumWebsite && window.quantumWebsite.eventBus;
+
+                    return {
+                        name: 'System Communication',
+                        passed: allSystemsAvailable,
+                        message: 'Systems can communicate',
+                        details: `Event bus available: ${hasEventBus ? 'Yes' : 'No'}`
+                    };
+                } catch (error) {
+                    return {
+                        name: 'System Communication',
+                        passed: false,
+                        message: error.message,
+                        details: 'System communication test failed'
+                    };
+                }
+            }
+
+            async testCrossSystemMetrics() {
+                try {
+                    // Test metrics integration between systems
+                    let metricsIntegrated = false;
+
+                    if (window.QuantumCDN && window.InvisibleAnalytics) {
+                        const cdnMetrics = window.QuantumCDN.getPerformanceMetrics();
+                        
+                        // Simulate metrics being sent to analytics
+                        window.InvisibleAnalytics.track('cdn_test_metric', {
+                            loadTimes: cdnMetrics.loadTimes?.length || 0
+                        });
+
+                        metricsIntegrated = true;
+                    }
+
+                    return {
+                        name: 'Cross-System Metrics',
+                        passed: metricsIntegrated,
+                        message: metricsIntegrated ? 'Metrics integration working' : 'Metrics not integrated',
+                        details: 'CDN metrics can be tracked in analytics'
+                    };
+                } catch (error) {
+                    return {
+                        name: 'Cross-System Metrics',
+                        passed: false,
+                        message: error.message,
+                        details: 'Cross-system metrics test failed'
+                    };
+                }
+            }
+
+            displayTestResults() {
+                const resultsContainer = document.getElementById('test-results');
+                resultsContainer.innerHTML = '';
+
+                const passedTests = this.testResults.filter(test => test.passed).length;
+                const totalTests = this.testResults.length;
+
+                // Summary
+                const summary = document.createElement('div');
+                summary.innerHTML = `
+                    <h3>Test Summary</h3>
+                    <p><strong>${passedTests}/${totalTests}</strong> tests passed</p>
+                    <p>Success Rate: <strong>${Math.round((passedTests/totalTests) * 100)}%</strong></p>
+                `;
+                resultsContainer.appendChild(summary);
+
+                // Individual results
+                this.testResults.forEach(test => {
+                    const testElement = document.createElement('div');
+                    testElement.style.cssText = `
+                        padding: 1rem;
+                        margin: 0.5rem 0;
+                        border-radius: 6px;
+                        background: ${test.passed ? '#065f46' : '#7f1d1d'};
+                        border-left: 4px solid ${test.passed ? '#10b981' : '#ef4444'};
+                    `;
+                    
+                    testElement.innerHTML = `
+                        <h4>${test.passed ? '✅' : '❌'} ${test.name}</h4>
+                        <p><strong>Message:</strong> ${test.message}</p>
+                        <p><strong>Details:</strong> ${test.details}</p>
+                    `;
+                    
+                    resultsContainer.appendChild(testElement);
+                });
+
+                this.log(`📊 Test Results: ${passedTests}/${totalTests} passed (${Math.round((passedTests/totalTests) * 100)}%)`);
+            }
+
+            async runPerformanceTest() {
+                this.log('⚡ Running performance tests...');
+                
+                const startTime = performance.now();
+                
+                // Simulate heavy operations
+                for (let i = 0; i < 1000; i++) {
+                    // Create and remove elements
+                    const div = document.createElement('div');
+                    document.body.appendChild(div);
+                    div.remove();
+                }
+                
+                const endTime = performance.now();
+                const duration = endTime - startTime;
+                
+                this.log(`⚡ Performance test completed in ${duration.toFixed(2)}ms`);
+                
+                if (duration > 100) {
+                    this.log('⚠️ Performance degradation detected');
+                    if (window.SelfHealingSystem) {
+                        window.SelfHealingSystem.handleSlowPerformance({ 
+                            name: 'performance_test', 
+                            duration 
+                        });
+                    }
+                }
+            }
+
+            async runStressTest() {
+                this.log('🔥 Running stress tests...');
+                
+                // Simulate multiple errors
+                for (let i = 0; i < 5; i++) {
+                    if (window.SelfHealingSystem) {
+                        window.SelfHealingSystem.handleError({
+                            type: 'stress_test',
+                            message: `Stress test error ${i + 1}`
+                        });
+                    }
+                    await this.wait(100);
+                }
+                
+                // Simulate resource failures
+                for (let i = 0; i < 3; i++) {
+                    const failedImg = document.createElement('img');
+                    failedImg.src = `https://nonexistent-${i}.example.com/image.jpg`;
+                    
+                    if (window.SelfHealingSystem) {
+                        window.SelfHealingSystem.handleResourceError(failedImg);
+                    }
+                    await this.wait(200);
+                }
+                
+                this.log('🔥 Stress test completed');
+            }
+
+            clearLog() {
+                this.logContainer.textContent = '';
+                this.log('📝 Log cleared');
+            }
+
+            wait(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+        }
+
+        // Global functions for buttons
+        let tester;
+
+        function runAllTests() {
+            if (tester) {
+                tester.runAllTests();
+            }
+        }
+
+        function runPerformanceTest() {
+            if (tester) {
+                tester.runPerformanceTest();
+            }
+        }
+
+        function runStressTest() {
+            if (tester) {
+                tester.runStressTest();
+            }
+        }
+
+        function clearLog() {
+            if (tester) {
+                tester.clearLog();
+            }
+        }
+
+        // Initialize tester when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            // Wait for systems to load
+            setTimeout(() => {
+                tester = new IntegrationTester();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

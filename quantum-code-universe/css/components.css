@@ -1,0 +1,559 @@
+/* ======================================
+   QuantumCode Universe - Components
+   Specialized component styles
+   ====================================== */
+
+/* ======================================
+   DNA THEATER SECTION
+   ====================================== */
+.dna-theater-section {
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #0F172A 100%);
+    position: relative;
+}
+
+.dna-theater-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-xl);
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.code-editor {
+    background: rgba(15, 23, 42, 0.8);
+    border-radius: 16px;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    overflow: hidden;
+    backdrop-filter: blur(20px);
+}
+
+.editor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-sm) var(--space-md);
+    background: rgba(0, 0, 0, 0.3);
+    border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.editor-tabs {
+    display: flex;
+    gap: var(--space-sm);
+}
+
+.tab {
+    padding: var(--space-xs) var(--space-sm);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: var(--quantum-text-muted);
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.tab.active {
+    background: var(--quantum-primary);
+    color: var(--quantum-text);
+}
+
+.editor-controls {
+    display: flex;
+    gap: var(--space-xs);
+}
+
+.control-btn {
+    padding: var(--space-xs) var(--space-sm);
+    background: rgba(6, 255, 165, 0.1);
+    border: 1px solid var(--quantum-accent);
+    border-radius: 6px;
+    color: var(--quantum-accent);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.control-btn:hover {
+    background: var(--quantum-accent);
+    color: var(--quantum-dark);
+}
+
+.editor-content {
+    display: flex;
+    height: 400px;
+}
+
+.line-numbers {
+    background: rgba(0, 0, 0, 0.2);
+    padding: var(--space-sm);
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: var(--quantum-text-muted);
+    min-width: 50px;
+    text-align: right;
+    border-right: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.code-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: var(--space-sm);
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: var(--quantum-text);
+    resize: none;
+    outline: none;
+    line-height: 1.6;
+}
+
+.code-output {
+    background: rgba(15, 23, 42, 0.8);
+    border-radius: 16px;
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    overflow: hidden;
+    backdrop-filter: blur(20px);
+}
+
+.output-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-sm) var(--space-md);
+    background: rgba(0, 0, 0, 0.3);
+    border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+    color: var(--quantum-text);
+    font-weight: 600;
+}
+
+.output-controls {
+    display: flex;
+    gap: var(--space-xs);
+}
+
+.output-btn {
+    padding: var(--space-xs) var(--space-sm);
+    background: rgba(139, 92, 246, 0.1);
+    border: 1px solid var(--quantum-secondary);
+    border-radius: 6px;
+    color: var(--quantum-secondary);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.output-btn:hover {
+    background: var(--quantum-secondary);
+    color: var(--quantum-text);
+}
+
+.output-canvas {
+    height: 400px;
+    background: radial-gradient(circle at center, rgba(59, 130, 246, 0.1), transparent);
+    position: relative;
+}
+
+/* ======================================
+   SERVICES GRID
+   ====================================== */
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--space-lg);
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.service-card {
+    position: relative;
+    background: rgba(15, 23, 42, 0.6);
+    border-radius: 20px;
+    padding: var(--space-xl);
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    transition: var(--transition-smooth);
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.service-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--quantum-accent);
+    box-shadow: 0 20px 60px rgba(6, 255, 165, 0.2);
+}
+
+.card-icon {
+    font-size: 3rem;
+    margin-bottom: var(--space-md);
+    animation: iconFloat 3s ease-in-out infinite;
+}
+
+@keyframes iconFloat {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+.card-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--quantum-text);
+    margin-bottom: var(--space-sm);
+}
+
+.card-description {
+    color: var(--quantum-text-muted);
+    line-height: 1.8;
+}
+
+.card-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    opacity: 0;
+    transition: var(--transition-smooth);
+}
+
+.service-card:hover .card-particles {
+    opacity: 1;
+}
+
+/* ======================================
+   TECHNOLOGY SHOWCASE
+   ====================================== */
+.tech-showcase {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-xl);
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.tech-orbit {
+    position: relative;
+    width: 300px;
+    height: 300px;
+}
+
+.tech-planet {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.tech-planet[data-tech="quantum"] {
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(45deg, var(--quantum-primary), var(--quantum-accent));
+    animation: orbitRotate 10s linear infinite;
+}
+
+.tech-planet[data-tech="neural"] {
+    bottom: 20px;
+    left: 20px;
+    background: linear-gradient(45deg, var(--quantum-secondary), var(--quantum-primary));
+    animation: orbitRotate 15s linear infinite reverse;
+}
+
+.tech-planet[data-tech="reality"] {
+    bottom: 20px;
+    right: 20px;
+    background: linear-gradient(45deg, var(--quantum-accent), var(--quantum-secondary));
+    animation: orbitRotate 12s linear infinite;
+}
+
+@keyframes orbitRotate {
+    0% { transform: rotate(0deg) translateX(100px) rotate(0deg); }
+    100% { transform: rotate(360deg) translateX(100px) rotate(-360deg); }
+}
+
+.planet-core {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--quantum-text);
+    z-index: 1;
+}
+
+.planet-ring {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    border: 2px solid currentColor;
+    border-radius: 50%;
+    opacity: 0.3;
+    animation: ringPulse 2s ease-in-out infinite;
+}
+
+@keyframes ringPulse {
+    0%, 100% { transform: scale(1); opacity: 0.3; }
+    50% { transform: scale(1.2); opacity: 0.6; }
+}
+
+.tech-details {
+    flex: 1;
+    max-width: 400px;
+}
+
+.tech-name {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--quantum-text);
+    margin-bottom: var(--space-sm);
+}
+
+.tech-description {
+    color: var(--quantum-text-muted);
+    line-height: 1.8;
+    margin-bottom: var(--space-lg);
+}
+
+.tech-stats {
+    display: flex;
+    gap: var(--space-lg);
+}
+
+.stat {
+    text-align: center;
+}
+
+.stat-value {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--quantum-accent);
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: var(--quantum-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* ======================================
+   CONTACT FORM
+   ====================================== */
+.contact-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-xl);
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+}
+
+.form-field {
+    position: relative;
+}
+
+.quantum-input,
+.quantum-textarea {
+    width: 100%;
+    padding: var(--space-md);
+    background: rgba(15, 23, 42, 0.8);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: var(--quantum-text);
+    font-size: 1.1rem;
+    backdrop-filter: blur(10px);
+    transition: var(--transition-smooth);
+}
+
+.quantum-input:focus,
+.quantum-textarea:focus {
+    outline: none;
+    border-color: var(--quantum-accent);
+    box-shadow: 0 0 20px rgba(6, 255, 165, 0.3);
+}
+
+.quantum-textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.input-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    opacity: 0;
+    transition: var(--transition-smooth);
+}
+
+.quantum-input:focus + .input-particles,
+.quantum-textarea:focus + .input-particles {
+    opacity: 1;
+}
+
+.submit-btn {
+    align-self: flex-start;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-quantum-tunnel {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: radial-gradient(circle, var(--quantum-accent), transparent);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: var(--transition-smooth);
+    pointer-events: none;
+}
+
+.submit-btn:hover .btn-quantum-tunnel {
+    width: 200%;
+    height: 200%;
+}
+
+.contact-visualization {
+    background: rgba(15, 23, 42, 0.6);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+}
+
+.contact-canvas {
+    width: 100%;
+    height: 100%;
+    min-height: 400px;
+}
+
+/* ======================================
+   WEBXR OVERLAY
+   ====================================== */
+.xr-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: var(--quantum-dark);
+    z-index: 10000;
+}
+
+.xr-controls {
+    position: absolute;
+    top: var(--space-lg);
+    right: var(--space-lg);
+    z-index: 10001;
+}
+
+.xr-btn {
+    padding: var(--space-sm) var(--space-md);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    color: var(--quantum-text);
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    transition: var(--transition-smooth);
+}
+
+.xr-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.xr-canvas {
+    width: 100%;
+    height: 100%;
+}
+
+/* ======================================
+   MICRO ECOSYSTEM
+   ====================================== */
+.micro-ecosystem {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.ecosystem-particles {
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(6, 255, 165, 0.1) 0%, transparent 50%);
+    transition: background 0.3s ease;
+}
+
+/* ======================================
+   RESPONSIVE COMPONENTS
+   ====================================== */
+@media (max-width: 1024px) {
+    .dna-theater-container,
+    .contact-container {
+        grid-template-columns: 1fr;
+        gap: var(--space-lg);
+    }
+    
+    .tech-showcase {
+        flex-direction: column;
+    }
+    
+    .tech-orbit {
+        width: 250px;
+        height: 250px;
+    }
+}
+
+@media (max-width: 768px) {
+    .services-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .service-card {
+        padding: var(--space-lg);
+    }
+    
+    .tech-stats {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .editor-content,
+    .output-canvas {
+        height: 300px;
+    }
+    
+    .tech-orbit {
+        width: 200px;
+        height: 200px;
+    }
+    
+    .tech-planet {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .planet-core {
+        font-size: 1.5rem;
+    }
+}

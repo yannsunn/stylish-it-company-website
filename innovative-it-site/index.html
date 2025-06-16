@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InnovateTech - 革新的ITソリューション企業</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/code-poetry.css">
+    <link rel="stylesheet" href="css/tech-dna.css">
+    <link rel="stylesheet" href="css/virtual-office.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.6.1/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+</head>
+<body>
+    <!-- Header Navigation -->
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">InnovateTech</div>
+            <ul class="nav-menu">
+                <li><a href="#home">ホーム</a></li>
+                <li><a href="#code-poetry">Code Poetry</a></li>
+                <li><a href="#tech-dna">Tech DNA</a></li>
+                <li><a href="#virtual-office">Virtual Office</a></li>
+                <li><a href="#contact">採用情報</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">革新的ITソリューションで未来を創造</h1>
+            <p class="hero-subtitle">コードから生まれる芸術、技術の進化を可視化し、バーチャル空間で新しい働き方を提案</p>
+            <div class="hero-cta">
+                <button class="cta-button primary" onclick="scrollToSection('code-poetry')">体験開始</button>
+                <button class="cta-button secondary" onclick="scrollToSection('virtual-office')">バーチャルオフィス</button>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <canvas id="hero-canvas"></canvas>
+        </div>
+    </section>
+
+    <!-- Code Poetry Gallery Section -->
+    <section id="code-poetry" class="code-poetry-section">
+        <div class="container">
+            <h2 class="section-title">Code Poetry Gallery</h2>
+            <p class="section-subtitle">美しいコードを芸術として体験する</p>
+            
+            <div class="poetry-gallery">
+                <div class="poetry-controls">
+                    <button id="play-music" class="music-btn">🎵 音楽と同期</button>
+                    <select id="code-selector" class="code-selector">
+                        <option value="fibonacci">フィボナッチ詩</option>
+                        <option value="quicksort">クイックソート舞踏</option>
+                        <option value="neural">ニューラル交響曲</option>
+                        <option value="blockchain">ブロックチェーン協奏曲</option>
+                    </select>
+                </div>
+                
+                <div class="poetry-display">
+                    <div class="code-container">
+                        <pre><code id="poetry-code" class="language-javascript"></code></pre>
+                    </div>
+                    <div class="visualization-container">
+                        <canvas id="code-viz"></canvas>
+                    </div>
+                </div>
+                
+                <div class="poetry-description">
+                    <h3 id="poem-title">フィボナッチ詩</h3>
+                    <p id="poem-description">数学の美しさをコードで表現した永遠の詩</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech DNA Storytelling Section -->
+    <section id="tech-dna" class="tech-dna-section">
+        <div class="container">
+            <h2 class="section-title">Tech DNA Storytelling</h2>
+            <p class="section-subtitle">技術進化の遺伝子を辿る旅</p>
+            
+            <div class="dna-container">
+                <div class="dna-controls">
+                    <button id="animate-evolution" class="evolution-btn">進化を再生</button>
+                    <div class="timeline-controls">
+                        <input type="range" id="timeline-slider" min="2015" max="2024" value="2024" class="timeline-slider">
+                        <span id="timeline-year">2024</span>
+                    </div>
+                </div>
+                
+                <div class="dna-visualization">
+                    <svg id="tech-tree" class="tech-tree"></svg>
+                </div>
+                
+                <div class="tech-info">
+                    <div id="tech-details" class="tech-details">
+                        <h3>技術ノードを選択してください</h3>
+                        <p>技術の系統樹をクリックして、その技術の詳細と進化の歴史を確認できます。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Virtual Office Experience Section -->
+    <section id="virtual-office" class="virtual-office-section">
+        <div class="container">
+            <h2 class="section-title">Virtual Office Experience</h2>
+            <p class="section-subtitle">3D空間で体験する企業文化</p>
+            
+            <div class="office-container">
+                <div class="office-controls">
+                    <div class="movement-guide">
+                        <span>マウス: 視点移動 | WASD: 移動 | クリック: インタラクション</span>
+                    </div>
+                    <div class="office-menu">
+                        <button onclick="moveToArea('entrance')" class="area-btn">エントランス</button>
+                        <button onclick="moveToArea('dev-area')" class="area-btn">開発エリア</button>
+                        <button onclick="moveToArea('meeting')" class="area-btn">会議室</button>
+                        <button onclick="moveToArea('lounge')" class="area-btn">ラウンジ</button>
+                    </div>
+                </div>
+                
+                <div class="office-3d">
+                    <canvas id="office-canvas"></canvas>
+                </div>
+                
+                <div class="office-interactions">
+                    <div id="interaction-panel" class="interaction-panel">
+                        <h3>エントランスへようこそ</h3>
+                        <p>InnovateTechのバーチャルオフィスへようこそ！各エリアを探索して、私たちの企業文化を体験してください。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact-section">
+        <div class="container">
+            <h2 class="section-title">Join Our Innovation Journey</h2>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h3>私たちと一緒に未来を創りませんか？</h3>
+                    <p>革新的な技術とクリエイティブな思考で、次世代のITソリューションを開発しています。</p>
+                    <ul class="benefits">
+                        <li>🚀 最先端技術での開発</li>
+                        <li>🎨 創造性を重視する文化</li>
+                        <li>🌏 リモート・フレキシブル勤務</li>
+                        <li>📈 継続的な学習とスキルアップ</li>
+                    </ul>
+                </div>
+                <div class="contact-form">
+                    <form>
+                        <input type="text" placeholder="お名前" required>
+                        <input type="email" placeholder="メールアドレス" required>
+                        <select required>
+                            <option value="">興味のある分野</option>
+                            <option value="frontend">フロントエンド開発</option>
+                            <option value="backend">バックエンド開発</option>
+                            <option value="ai">AI・機械学習</option>
+                            <option value="design">UI/UXデザイン</option>
+                        </select>
+                        <textarea placeholder="メッセージ（任意）"></textarea>
+                        <button type="submit" class="submit-btn">応募する</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">InnovateTech</div>
+                <div class="footer-links">
+                    <a href="#privacy">プライバシーポリシー</a>
+                    <a href="#terms">利用規約</a>
+                    <a href="#careers">採用情報</a>
+                </div>
+                <div class="footer-social">
+                    <a href="#" class="social-link">GitHub</a>
+                    <a href="#" class="social-link">Twitter</a>
+                    <a href="#" class="social-link">LinkedIn</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 InnovateTech. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/main.js"></script>
+    <script src="js/code-poetry.js"></script>
+    <script src="js/tech-dna.js"></script>
+    <script src="js/virtual-office.js"></script>
+</body>
+</html>
